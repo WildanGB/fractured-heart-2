@@ -1,7 +1,12 @@
+# <<<<<<< Test-Map/Player
+# =======
+
+# >>>>>>> main
 import pygame 
 from settings import *
 
 class Player(pygame.sprite.Sprite):
+# <<<<<<< Test-Map/Player
 	def __init__(self,pos,groups,obstacle_sprites):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
@@ -59,3 +64,9 @@ class Player(pygame.sprite.Sprite):
 	def update(self):
 		self.input()
 		self.move(self.speed)
+# =======
+	def __init__(self,pos,groups):
+		super().__init__(groups)
+		self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
+		self.rect = self.image.get_rect(topleft = pos)
+# >>>>>>> main
