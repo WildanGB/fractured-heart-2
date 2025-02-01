@@ -21,13 +21,13 @@ class Level:
 
 	def create_map(self):
 		layouts = {
-			'boundary': import_csv_layout('../fractured-heart-2/map/map_FloorBlocks.csv'),
-			'grass': import_csv_layout('../fractured-heart-2/map/map_Grass.csv'),
-			'object': import_csv_layout('../fractured-heart-2/map/map_Objects.csv'),
+			'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
+			'grass': import_csv_layout('../map/map_Grass.csv'),
+			'object': import_csv_layout('../map/map_Objects.csv'),
 		}
 		graphics = {
-			'grass': import_folder('../fractured-heart-2/graphics/grass'),
-			'objects': import_folder('../fractured-heart-2/graphics/objects')
+			'grass': import_folder('../graphics/grass'),
+			'objects': import_folder('../graphics/objects')
 		}
 		for style,layout in layouts.items():
 			for row_index,row in enumerate(layout):
@@ -63,7 +63,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 		self.offset = pygame.math.Vector2()
 
 		# creating the floor
-		self.floor_surf = pygame.image.load('../fractured-heart-2/graphics/tilemap/ground.png').convert()
+		self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
 		self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
 
 	def custom_draw(self,player):
