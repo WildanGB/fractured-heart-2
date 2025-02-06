@@ -16,6 +16,7 @@ class Player(Entity):
         self.status = 'down'
 
         # movement
+        self.speed = 5
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
@@ -155,11 +156,9 @@ class Player(Entity):
         if not self.can_switch_magic:
             if current_time - self.magic_switch_time >= self.switch_duration_cooldown:
                 self.can_switch_magic = True
-
         if not self.vulnerable:
             if current_time - self.hurt_time >= self.invulnerability_duration:
                 self.vulnerable = True
-
 
     def animate(self):
         animation = self.animations[self.status]

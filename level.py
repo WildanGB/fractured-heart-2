@@ -67,18 +67,25 @@ class Level:
                                     self.obstacle_sprites,
                                     self.create_attack,
                                     self.destroy_attack,
-                                    self.create_magic
-                                )
+                                    self.create_magic)
                             else:
                                 if col == '390': monster_name = 'bamboo'
                                 elif col == '391': monster_name = 'spirit'
                                 elif col == '392': monster_name = 'raccoon'
                                 else: monster_name = 'squid'
+
                                 Enemy(monster_name, (x, y), [self.visible_sprites,self.attackable_sprites], self.obstacle_sprites,self.damage_player)
+                                Enemy(monster_name, (x, y), [self.visible_sprites], self.obstacle_sprites)
+
 
     def create_attack(self):
 
         self.current_attack = Weapon(self.player, [self.visible_sprites,self.attack_sprites])
+
+    def create_magic(self,style,strength,cost):
+        print(style)
+        print(strength)
+        print(cost)
 
     def create_magic(self,style,strength,cost):
         print(style)
