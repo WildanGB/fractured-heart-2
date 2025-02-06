@@ -65,7 +65,12 @@ class Level:
                                     self.obstacle_sprites,
                                     self.create_attack,
                                     self.destroy_attack,
+                                  
+                          
+                                    self.create_magic
+#=======
                                     # self.create_magic
+#>>>>>>> main
                                 )
                             else:
                                 if col == '390': monster_name = 'bamboo'
@@ -77,6 +82,11 @@ class Level:
     def create_attack(self):
 
         self.current_attack = Weapon(self.player, [self.visible_sprites])
+
+    def create_magic(self,style,strength,cost):
+        print(style)
+        print(strength)
+        print(cost)
 
     def destroy_attack(self):
         if self.current_attack:
