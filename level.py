@@ -65,7 +65,12 @@ class Level:
                                     self.obstacle_sprites,
                                     self.create_attack,
                                     self.destroy_attack,
+                                  
+                          
                                     self.create_magic
+#=======
+                                    # self.create_magic
+#>>>>>>> main
                                 )
                             else:
                                 if col == '390': monster_name = 'bamboo'

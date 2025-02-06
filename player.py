@@ -6,6 +6,9 @@ from entity import Entity
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack,create_magic):
+#=======
+    def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack):
+#>>>>>>> main
         super().__init__(groups)
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
