@@ -155,6 +155,9 @@ class Player(Entity):
         if not self.can_switch_magic:
             if current_time - self.magic_switch_time >= self.switch_duration_cooldown:
                 self.can_switch_magic = True
+        if not self.vulnerable:
+            if current_time - self.hurt_time >= self.invulnerability_duration:
+                self.vulnerable = True
 
         if not self.vulnerable:
             if current_time - self.hurt_time >= self.invulnerability_duration:
@@ -195,6 +198,7 @@ class Player(Entity):
             self.energy += 0.01 * self.stats['magic']
         else:
             self.energy = self.stats['energy']
+
 
     def update(self):
         self.input()
