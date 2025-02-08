@@ -6,6 +6,9 @@ from support import *
 class Enemy(Entity):
 	def __init__(self,monster_name,pos,groups,obstacle_sprites,damage_player,trigger_death_particles):
 
+
+	def __init__(self,monster_name,pos,groups,obstacle_sprites,damage_player):
+
 		# general setup
 		super().__init__(groups)
 		self.sprite_type = 'enemy'
@@ -37,7 +40,9 @@ class Enemy(Entity):
 		self.attack_time = None
 		self.attack_cooldown = 400
 		self.damage_player = damage_player
+
 		self.trigger_death_particles = trigger_death_particles
+
 
 		# invincibility timer
 		self.vulnerable = True
@@ -95,12 +100,19 @@ class Enemy(Entity):
 
 		self.image = animation[int(self.frame_index)]
 		self.rect = self.image.get_rect(center = self.hitbox.center)
+    
+		if not self.vulnerable:
+			alpha = self.wave_value()
+			self.image.set_alpha(alpha)
+		else:
+			self.image.set_alpha(255)
 
 		if not self.vulnerable:
 			alpha = self.wave_value()
 			self.image.set_alpha(alpha)
 		else:
 			self.image.set_alpha(255)
+
 
 	def cooldowns(self):
 		current_time = pygame.time.get_ticks()
@@ -132,6 +144,14 @@ class Enemy(Entity):
 	def hit_reaction(self):
 		if not self.vulnerable:
 			self.direction *= -self.resistance
+
+
+	def update(self):
+		self.hit_reaction()
+		self.move(self.speed)
+		self.animate()
+		self.cooldowns()
+		self.check_death()
 
 
 	def update(self):
