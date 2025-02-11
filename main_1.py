@@ -2,7 +2,7 @@ import pygame, sys
 from settings import *
 from level import Level
 from game_over import GameOverScreen
-from main_menu import MainMenuScreen
+from menu import MainMenuScreen
 
 class Game:
     def __init__(self):
