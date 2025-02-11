@@ -11,13 +11,13 @@ class GameOverScreen :
         self.button_height = 60
         self.button_spacing = 50
         self.restart_button = pygame.Rect (
-            (SCREEN_WIDTH // 2) - (self.button_width + self.button_spacing // 2) ,
-            SCREEN_HEIGTH // 2 + 100 ,
+            (WIDTH // 2) - (self.button_width + self.button_spacing // 2) ,
+            HEIGTH // 2 + 100 ,
             self.button_width ,
             self.button_height )
         self.quit_button = pygame.Rect (
-            (SCREEN_WIDTH // 2) + (self.button_spacing // 2) ,
-            SCREEN_HEIGTH // 2 + 100 ,
+            (WIDTH // 2) + (self.button_spacing // 2) ,
+            HEIGTH // 2 + 100 ,
             self.button_width ,
             self.button_height )
 
@@ -25,10 +25,10 @@ class GameOverScreen :
         self.level.visible_sprites.custom_draw ( self.level.player )
         font = pygame.font.Font ( None , 100 )
         game_over_text = font.render ( "GAME OVER" , True , "red" )
-        text_rect = game_over_text.get_rect ( center = (SCREEN_WIDTH // 2 , self.game_over_text_pos) )
+        text_rect = game_over_text.get_rect ( center = (WIDTH // 2 , self.game_over_text_pos) )
         self.screen.blit ( game_over_text , text_rect )
 
-        if self.game_over_text_pos < SCREEN_HEIGTH // 2 :
+        if self.game_over_text_pos < HEIGTH // 2 :
             self.game_over_text_pos += 5
         else :
             pygame.draw.rect ( self.screen , "green" , self.restart_button )
