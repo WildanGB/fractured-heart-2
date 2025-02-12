@@ -1,10 +1,8 @@
 import pygame, sys
 from settings import *
 from level import Level
-from menu import MainMenuScreen  # Assuming you name this file menu.py
+from start_screen import StartScreen # Assuming you name this file menu.py
 from game_over import GameOverScreen
-from upgrade import Upgrade
-
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -17,7 +15,7 @@ def main():
     main_sound.play(loops=-1)
 
     # Create and display the main menu
-    menu = MainMenuScreen(screen)
+    menu = StartScreen(screen)
     in_menu = True
     while in_menu:
         for event in pygame.event.get():
@@ -33,27 +31,20 @@ def main():
 
     # After exiting the menu, start the game
     level = Level()
-    upgrade_menu = None  # Initialize the upgrade menu to None
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_u:
+                    level.toggle_menu()
 
-        # Check if "U" key is pressed to toggle the upgrade menu
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_u]:  # "U" key pressed
-            if upgrade_menu is None:
-                upgrade_menu = Upgrade(level.player)  # Open the upgrade menu
-            else:
-                upgrade_menu = None  # Close the upgrade menu
-
-        if upgrade_menu:  # If the upgrade menu is active, display it
-            upgrade_menu.display()
-        else:  # Regular gameplay
-            screen.fill(WATER_COLOR)
-            level.run()
-
+        screen.fill('black')
+        level.run()
         pygame.display.update()
         clock.tick(FPS)
 
