@@ -96,7 +96,7 @@ class Player(Entity):
                 self.weapon_attack_sound.play()
 
             # magic input
-            if keys[pygame.K_LCTRL]:
+            if keys[pygame.K_m]:
                 self.attacking = True
                 self.attack_time = pygame.time.get_ticks()
                 style = list(magic_data.keys())[self.magic_index]
