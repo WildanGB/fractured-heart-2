@@ -7,6 +7,8 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Fractured-Heart")
+    icon = pygame.image.load("../assets/images/enemies/tree/idle/5.png")
+    pygame.display.set_icon(icon)
     clock = pygame.time.Clock()
 
     # Sound setup

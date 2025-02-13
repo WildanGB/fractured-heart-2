@@ -42,14 +42,20 @@ class Level:
 
     def create_map(self):
         layouts = {
-            'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
-            'grass': import_csv_layout('../map/map_Grass.csv'),
-            'object': import_csv_layout('../map/map_Objects.csv'),
-            'entities': import_csv_layout('../map/map_Entities.csv')
+            # 'boundary': import_csv_layout('../map/map_FloorBlocks.csv'),
+            # 'grass': import_csv_layout('../map/map_Grass.csv'),
+            # 'object': import_csv_layout('../map/map_Objects.csv'),
+            # 'entities': import_csv_layout('../map/map_Entities.csv')
+            'boundary': import_csv_layout('../assets/csv files/game map_FloorBlocks.csv'),
+            'grass': import_csv_layout('../assets/csv files/game map_breakable grass.csv'),
+            'object': import_csv_layout('../assets/images/video assets/map/map_Objects.csv'),
+            'entities': import_csv_layout('../assets/csv files/game map_entities.csv')
         }
         graphics = {
-            'grass': import_folder('../graphics/Grass'),
-            'objects': import_folder('../graphics/objects')
+            # 'grass': import_folder('../graphics/Grass'),
+            # 'objects': import_folder('../graphics/objects')
+            'grass': import_folder('../assets/images/map assets/grass'),
+            'objects': import_folder('../assets/images/video assets/graphics/objects')
         }
 
         for style, layout in layouts.items():
@@ -73,7 +79,8 @@ class Level:
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
 
                         if style == 'entities':
-                            if col == '394':
+                            # if col == '394':
+                            if col == '0':
                                 self.player = Player(
                                     (x, y),
                                     [self.visible_sprites],
@@ -82,14 +89,22 @@ class Level:
                                     self.destroy_attack,
                                     self.create_magic)
                             else:
-                                if col == '390':
-                                    monster_name = 'bamboo'
-                                elif col == '391':
-                                    monster_name = 'spirit'
-                                elif col == '392':
-                                    monster_name = 'raccoon'
+                                # if col == '390':
+                                #     monster_name = 'bamboo'
+                                # elif col == '391':
+                                #     monster_name = 'spirit'
+                                # elif col == '392':
+                                #     monster_name = 'raccoon'
+                                # else:
+                                #     monster_name = 'squid'
+                                if col == '1':
+                                    monster_name = 'tree'
+                                elif col == '2':
+                                    monster_name = 'cherry tree'
+                                elif col == '3':
+                                    monster_name = 'snowy tree'
                                 else:
-                                    monster_name = 'squid'
+                                    monster_name = 'tree'
                                 Enemy(
                                     monster_name,
                                     (x, y),
@@ -150,15 +165,12 @@ class Level:
         self.game_paused = not self.game_paused
 
     def run(self):
+        # update and draw the game
         self.visible_sprites.custom_draw(self.player)
+        self.visible_sprites.update()
+        self.visible_sprites.enemy_update(self.player)
+        self.player_attack_logic()
         self.ui.display(self.player)
-
-        if self.game_paused:
-            self.upgrade.display()
-        else:
-            self.visible_sprites.update()
-            self.visible_sprites.enemy_update(self.player)
-            self.player_attack_logic()
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -172,7 +184,8 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
 
         # creating the floor
-        self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        # self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
+        self.floor_surf = pygame.image.load('../assets/images/map assets/game map.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):
