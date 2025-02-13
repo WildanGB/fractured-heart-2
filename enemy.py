@@ -55,11 +55,18 @@ class Enemy(Entity):
         self.attack_sound.set_volume(0.6)
 
     def import_graphics(self, name):
-        self.animations = {'idle': [], 'move': [], 'attack': []}
-        # main_path = f'../graphics/monsters/{name}/'
+        self.animations = {'idle': [], 'move': [], 'attack': [], 'death': []}
         main_path = f'../assets/images/enemies/{name}/'
         for animation in self.animations.keys():
-            self.animations[animation] = import_folder(main_path + animation)
+            frames = import_folder(main_path + animation)
+            if frames:  # if frames were loaded
+                self.animations[animation] = frames
+            else:
+                print(f"Warning: No frames loaded for {name} animation '{animation}'. Using placeholder.")
+                # Create a placeholder surface (you may adjust size and color as needed)
+                placeholder = pygame.Surface((TILESIZE, TILESIZE))
+                placeholder.fill((255, 0, 255))  # magenta indicates missing asset
+                self.animations[animation] = [placeholder]
 
     def get_player_distance_direction(self, player):
         enemy_vec = pygame.math.Vector2(self.rect.center)

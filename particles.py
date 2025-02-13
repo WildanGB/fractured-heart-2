@@ -8,7 +8,8 @@ class AnimationPlayer:
 			# magic
 			# 'flame': import_folder('../graphics/particles/flame/frames'),
 			# 'aura': import_folder('../graphics/particles/aura'),
-			'heal': import_folder('../graphics/particles/heal/frames'),
+			# 'heal': import_folder('../graphics/particles/heal/frames'),
+			'heal': import_folder('../assets/images/video assets/graphics/particles/heal/frames'),
 			'flame': import_folder('../assets/images/video assets/graphics/particles/flame/frames'),
 			'aura': import_folder('../assets/images/video assets/graphics/particles/aura'),
 			
