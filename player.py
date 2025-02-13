@@ -10,8 +10,8 @@ class Player(Entity):
         # self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.image = pygame.image.load('../assets/images/video assets/graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        # self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(-6, HITBOX_OFFSET['player'])
+        # self.hitbox = self.rect.inflate(0, -26) (this is for fancypants)
 
         # graphics setup
         self.import_player_assets()

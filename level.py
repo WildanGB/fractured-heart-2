@@ -164,13 +164,36 @@ class Level:
 
         self.game_paused = not self.game_paused
 
+
     def run(self):
-        # update and draw the game
-        self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update()
-        self.visible_sprites.enemy_update(self.player)
-        self.player_attack_logic()
-        self.ui.display(self.player)
+        # updating and drawing the bg
+        if self.game_paused:
+            # Cache the background if it's not already cached.
+            if not hasattr(self, 'pause_background'):
+                self.pause_background = self.display_surface.copy()
+            # Blit the cached background.
+            self.display_surface.blit(self.pause_background, (0, 0))
+            # Draw the UI and upgrade menu.
+            self.ui.display(self.player)
+            self.upgrade.display()
+        else:
+            # If we were paused before, remove the cached background.
+            if hasattr(self, 'pause_background'):
+                del self.pause_background
+            # Normal gameplay drawing and updating.
+            self.visible_sprites.custom_draw(self.player)
+            self.ui.display(self.player)
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            self.player_attack_logic()
+#upgrade menu introducing lag
+        if self.game_paused:
+            self.upgrade.display()
+        else:
+            self.visible_sprites.update()
+            self.visible_sprites.enemy_update(self.player)
+            self.player_attack_logic()
+# upgrade end
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -188,6 +211,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.floor_surf = pygame.image.load('../assets/images/map assets/game map.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
+    # view culling
     def custom_draw(self, player):
         # Calculate the camera offset
         self.offset.x = player.rect.centerx - self.half_width
