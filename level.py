@@ -176,19 +176,23 @@ class YSortCameraGroup(pygame.sprite.Group):
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):
-
-        # getting the offset
+        # Calculate the camera offset
         self.offset.x = player.rect.centerx - self.half_width
         self.offset.y = player.rect.centery - self.half_height
 
-        # drawing the floor
+        # Draw the floor with offset
         floor_offset_pos = self.floor_rect.topleft - self.offset
         self.display_surface.blit(self.floor_surf, floor_offset_pos)
 
-        # for sprite in self.sprites():
+        # Create a view rect representing what is visible on the screen
+        view_rect = pygame.Rect(self.offset.x, self.offset.y, self.display_surface.get_width(),
+                                self.display_surface.get_height())
+
+        # Only draw sprites that are within the view_rect
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            offset_pos = sprite.rect.topleft - self.offset
-            self.display_surface.blit(sprite.image, offset_pos)
+            if sprite.rect.colliderect(view_rect):
+                offset_pos = sprite.rect.topleft - self.offset
+                self.display_surface.blit(sprite.image, offset_pos)
 
     def enemy_update(self, player):
         enemy_sprites = [sprite for sprite in self.sprites() if
