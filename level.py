@@ -103,6 +103,12 @@ class Level:
                                     monster_name = 'cherry tree'
                                 elif col == '3':
                                     monster_name = 'snowy tree'
+                                elif col == '4':
+                                    monster_name = 'spirit'
+                                elif col == '5':
+                                    monster_name = 'ninja'
+                                elif col == '6':
+                                    monster_name = 'oni'
                                 else:
                                     monster_name = 'tree'
                                 enemy = Enemy(
