@@ -186,36 +186,6 @@ class Level:
             self.player_attack_logic()
 
 
-# Existing YSortCameraGroup (unchanged, available for reference)
-class YSortCameraGroup(pygame.sprite.Group):
-    def __init__(self):
-        super().__init__()
-        self.display_surface = pygame.display.get_surface()
-        self.half_width = self.display_surface.get_width() // 2
-        self.half_height = self.display_surface.get_height() // 2
-        self.offset = pygame.math.Vector2()
-        self.floor_surf = pygame.image.load('../assets/images/map assets/game map.png').convert()
-        self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
-
-    def custom_draw(self, player):
-        self.offset.x = player.rect.centerx - self.half_width
-        self.offset.y = player.rect.centery - self.half_height
-        floor_offset_pos = self.floor_rect.topleft - self.offset
-        self.display_surface.blit(self.floor_surf, floor_offset_pos)
-        view_rect = pygame.Rect(self.offset.x, self.offset.y, self.display_surface.get_width(),
-                                self.display_surface.get_height())
-        for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            if sprite.rect.colliderect(view_rect):
-                offset_pos = sprite.rect.topleft - self.offset
-                self.display_surface.blit(sprite.image, offset_pos)
-
-    def enemy_update(self, player):
-        enemy_sprites = [sprite for sprite in self.sprites() if
-                         hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
-        for enemy in enemy_sprites:
-            enemy.enemy_update(player)
-
-
 # New ChunkedCameraGroup for chunk loading
 class ChunkedCameraGroup(pygame.sprite.Group):
     def __init__(self, chunks, chunk_size):
