@@ -3,10 +3,12 @@ from settings import *
 from entity import Entity
 from support import *
 
+# Global cache for enemy sounds
+sound_cache = {}
+
 
 class Enemy(Entity):
     def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, add_exp):
-
         # general setup
         super().__init__(groups)
         self.sprite_type = 'enemy'
@@ -46,10 +48,17 @@ class Enemy(Entity):
         self.hit_time = None
         self.invincibility_duration = 300
 
-        # sounds
+        # sounds: use cached sound if available
         self.death_sound = pygame.mixer.Sound('../audio/death.wav')
         self.hit_sound = pygame.mixer.Sound('../audio/hit.wav')
-        self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
+        # Cache attack_sound based on the file path from monster_info
+        attack_sound_path = monster_info['attack_sound']
+        if attack_sound_path in sound_cache:
+            self.attack_sound = sound_cache[attack_sound_path]
+        else:
+            self.attack_sound = pygame.mixer.Sound(attack_sound_path)
+            sound_cache[attack_sound_path] = self.attack_sound
+
         self.death_sound.set_volume(0.6)
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.6)
@@ -63,26 +72,22 @@ class Enemy(Entity):
                 self.animations[animation] = frames
             else:
                 print(f"Warning: No frames loaded for {name} animation '{animation}'. Using placeholder.")
-                # Create a placeholder surface (you may adjust size and color as needed)
                 placeholder = pygame.Surface((TILESIZE, TILESIZE))
-                placeholder.fill((255, 0, 255))  # magenta indicates missing asset
+                placeholder.fill((255, 0, 255))
                 self.animations[animation] = [placeholder]
 
     def get_player_distance_direction(self, player):
         enemy_vec = pygame.math.Vector2(self.rect.center)
         player_vec = pygame.math.Vector2(player.rect.center)
         distance = (player_vec - enemy_vec).magnitude()
-
         if distance > 0:
             direction = (player_vec - enemy_vec).normalize()
         else:
             direction = pygame.math.Vector2()
-
         return (distance, direction)
 
     def get_status(self, player):
         distance = self.get_player_distance_direction(player)[0]
-
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
                 self.frame_index = 0
@@ -104,16 +109,13 @@ class Enemy(Entity):
 
     def animate(self):
         animation = self.animations[self.status]
-
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
             if self.status == 'attack':
                 self.can_attack = False
             self.frame_index = 0
-
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
-
         if not self.vulnerable:
             alpha = self.wave_value()
             self.image.set_alpha(alpha)
@@ -125,7 +127,6 @@ class Enemy(Entity):
         if not self.can_attack:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.can_attack = True
-
         if not self.vulnerable:
             if current_time - self.hit_time >= self.invincibility_duration:
                 self.vulnerable = True
