@@ -36,6 +36,13 @@ BAR_COLOR = '#EEEEEE'
 BAR_COLOR_SELECTED = '#111111'
 UPGRADE_BG_COLOR_SELECTED = '#EEEEEE'
 
+# #DialogBOx 
+DIALOG_BOX_WIDTH = 1060
+DIALOG_BOX_HEIGHT = 280
+DIALOG_TEXT_WIDTH = 800
+DIALOG_TEXT_HEIGHT = 150
+DIALOG_FONT_SIZE = 13
+
 # weapons
 weapon_data = {
 	# 'sword': {'cooldown': 100, 'damage': 15,'graphic':'../graphics/weapons/sword/full.png'},
