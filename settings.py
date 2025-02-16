@@ -1,4 +1,5 @@
 # game setup
+COLLISION_GRID_SIZE = 128
 WIDTH    = 1280
 HEIGHT	   = 720
 FPS      = 60
