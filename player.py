@@ -58,7 +58,7 @@ class Player(Entity):
         self.weapon_attack_sound.set_volume(0.4)
 
     def import_player_assets(self):
-        character_path = '../graphics/player/'
+        character_path = '../assets/images/video assets/graphics/player/'
         self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
                            'right_attack': [], 'left_attack': [], 'up_attack': [], 'down_attack': []}
