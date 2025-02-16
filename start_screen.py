@@ -184,6 +184,8 @@ class StartScreen:
                     self.show_credits = True
                 elif action == "howto":
                     self.show_howto = True
+                elif action == "start":
+                    return "start"
                 elif action == "quit":
                     pygame.quit()
                     sys.exit()

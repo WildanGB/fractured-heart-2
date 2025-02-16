@@ -6,7 +6,6 @@ from support import *
 # Global cache for enemy sounds
 sound_cache = {}
 
-
 class Enemy(Entity):
     def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, add_exp):
         # general setup
@@ -51,7 +50,6 @@ class Enemy(Entity):
         # sounds: use cached sound if available
         self.death_sound = pygame.mixer.Sound('../audio/death.wav')
         self.hit_sound = pygame.mixer.Sound('../audio/hit.wav')
-        # Cache attack_sound based on the file path from monster_info
         attack_sound_path = monster_info['attack_sound']
         if attack_sound_path in sound_cache:
             self.attack_sound = sound_cache[attack_sound_path]
@@ -62,6 +60,11 @@ class Enemy(Entity):
         self.death_sound.set_volume(0.6)
         self.hit_sound.set_volume(0.6)
         self.attack_sound.set_volume(0.6)
+
+        # For death processing
+        self.death_started = False
+        self.death_start_time = 0
+        self.death_delay = 1000  # ms to wait before final death
 
     def import_graphics(self, name):
         self.animations = {'idle': [], 'move': [], 'attack': [], 'death': []}
@@ -87,6 +90,8 @@ class Enemy(Entity):
         return (distance, direction)
 
     def get_status(self, player):
+        if self.death_started:
+            return
         distance = self.get_player_distance_direction(player)[0]
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
@@ -98,6 +103,8 @@ class Enemy(Entity):
             self.status = 'idle'
 
     def actions(self, player):
+        if self.death_started:
+            return
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
@@ -110,10 +117,15 @@ class Enemy(Entity):
     def animate(self):
         animation = self.animations[self.status]
         self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
-            if self.status == 'attack':
-                self.can_attack = False
-            self.frame_index = 0
+        if self.status == 'death':
+            # Do not loop death animation; hold at final frame.
+            if self.frame_index >= len(animation):
+                self.frame_index = len(animation) - 1
+        else:
+            if self.frame_index >= len(animation):
+                if self.status == 'attack':
+                    self.can_attack = False
+                self.frame_index = 0
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
         if not self.vulnerable:
@@ -132,7 +144,7 @@ class Enemy(Entity):
                 self.vulnerable = True
 
     def get_damage(self, player, attack_type):
-        if self.vulnerable:
+        if self.vulnerable and not self.death_started:
             self.hit_sound.play()
             self.direction = self.get_player_distance_direction(player)[1]
             if attack_type == 'weapon':
@@ -144,16 +156,27 @@ class Enemy(Entity):
 
     def check_death(self):
         if self.health <= 0:
-            self.kill()
-            self.trigger_death_particles(self.rect.center, self.monster_name)
-            self.add_exp(self.exp)
-            self.death_sound.play()
+            if not self.death_started:
+                self.death_started = True
+                self.status = 'death'
+                self.frame_index = 0
+                self.death_start_time = pygame.time.get_ticks()
+            else:
+                if pygame.time.get_ticks() - self.death_start_time >= self.death_delay:
+                    self.trigger_death_particles(self.rect.center, self.monster_name)
+                    self.add_exp(self.exp)
+                    self.death_sound.play()
+                    self.kill()
 
     def hit_reaction(self):
         if not self.vulnerable:
             self.direction *= -self.resistance
 
     def update(self):
+        self.check_death()
+        if self.death_started:
+            self.animate()
+            return
         self.hit_reaction()
         self.move(self.speed)
         self.animate()
@@ -161,5 +184,10 @@ class Enemy(Entity):
         self.check_death()
 
     def enemy_update(self, player):
-        self.get_status(player)
-        self.actions(player)
+        if not self.death_started:
+            self.get_status(player)
+            self.actions(player)
+
+# Add this factory function to create new enemies
+def create_enemy(monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, add_exp):
+    return Enemy(monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, add_exp)
