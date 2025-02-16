@@ -12,6 +12,8 @@ from particles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
 from enemy_spawner import EnemySpawner  # Import the enemy spawner
+from npc import Npc
+
 
 class Level:
     def __init__(self):
@@ -81,54 +83,65 @@ class Level:
                     if chunk_key not in self.chunks:
                         self.chunks[chunk_key] = []
 
-                    if style == 'boundary':
-                        sprite = Tile((x, y), [self.obstacle_sprites], 'invisible')
-                        self.chunks[chunk_key].append(sprite)
-                    elif style == 'grass':
-                        sprite = Tile((x, y),
-                                      [self.visible_sprites, self.obstacle_sprites, self.attackable_sprites],
-                                      'grass', choice(graphics['grass']))
-                        self.chunks[chunk_key].append(sprite)
-                    elif style == 'object':
-                        sprite = Tile((x, y), [self.visible_sprites, self.obstacle_sprites],
-                                      'object', graphics['objects'][int(col)])
-                        self.chunks[chunk_key].append(sprite)
-                    elif style == 'entities':
-                        if col == '0':  # Player spawn
-                            self.player = Player(
+                        if style == 'boundary':
+                            sprite = Tile((x, y), [self.obstacle_sprites], 'invisible')
+                            self.chunks[chunk_key].append(sprite)
+                        if style == 'grass':
+                            random_grass_image = choice(graphics['grass'])
+                            sprite = Tile(
                                 (x, y),
-                                [self.visible_sprites],
-                                self.obstacle_sprites,
-                                self.create_attack,
-                                self.destroy_attack,
-                                self.create_magic)
-                        else:
-                            if col == '1':
-                                monster_name = 'tree'
-                            elif col == '2':
-                                monster_name = 'cherry tree'
-                            elif col == '3':
-                                monster_name = 'snowy tree'
-                            elif col == '4':
-                                monster_name = 'spirit'
-                            elif col == '5':
-                                monster_name = 'ninja'
-                            elif col == '6':
-                                monster_name = 'oni'
+                                [self.visible_sprites, self.obstacle_sprites, self.attackable_sprites],
+                                'grass',
+                                random_grass_image)
+                            self.chunks[chunk_key].append(sprite)
+                        if style == 'object':
+                            surf = graphics['objects'][int(col)]
+                            sprite = Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
+                            self.chunks[chunk_key].append(sprite)
+                        if style == 'entities':
+                            if col == '0':
+                                self.player = Player(
+                                    (x, y),
+                                    [self.visible_sprites],
+                                    self.obstacle_sprites,
+                                    self.create_attack,
+                                    self.destroy_attack,
+                                    self.create_magic)
+                                # Optionally, add player to a chunk:
+                                # self.chunks[chunk_key].append(self.player)
+                            elif col == '80':
+                                    npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc1")
+                                    self.chunks[chunk_key].append(npc)
+                            elif col == '81':
+                                    npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc2")
+                                    self.chunks[chunk_key].append(npc)
+                            elif col == '82':
+                                    npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc3")
+                                    self.chunks[chunk_key].append(npc)
                             else:
-                                monster_name = 'tree'
-                            enemy = Enemy(
-                                monster_name,
-                                (x, y),
-                                [self.visible_sprites, self.attackable_sprites],
-                                self.obstacle_sprites,
-                                self.damage_player,
-                                self.trigger_death_particles,
-                                self.add_exp
-                            )
-                            self.chunks[chunk_key].append(enemy)
-                            # Record enemy spawn point for area-based respawning
-                            self.enemy_spawn_points.append((monster_name, (x, y)))
+                                if col == '1':
+                                    monster_name = 'tree'
+                                elif col == '2':
+                                    monster_name = 'cherry tree'
+                                elif col == '3':
+                                    monster_name = 'snowy tree'
+                                elif col == '4':
+                                    monster_name = 'spirit'
+                                elif col == '5':
+                                    monster_name = 'ninja'
+                                elif col == '6':
+                                    monster_name = 'oni'
+                                else:
+                                    monster_name = 'tree'
+                                enemy = Enemy(
+                                    monster_name,
+                                    (x, y),
+                                    [self.visible_sprites, self.attackable_sprites],
+                                    self.obstacle_sprites,
+                                    self.damage_player,
+                                    self.trigger_death_particles,
+                                    self.add_exp)
+                                self.chunks[chunk_key].append(enemy)
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
@@ -175,6 +188,9 @@ class Level:
     def toggle_menu(self):
         self.game_paused = not self.game_paused
 
+    def dialog_active(self):
+        self.game_paused = not self.game_paused
+
     def run(self):
         if self.game_paused:
             if not hasattr(self, 'pause_background'):
@@ -193,10 +209,17 @@ class Level:
                 self.display_surface.blit(sprite.image, offset_pos)
             self.ui.display(self.player)
             self.visible_sprites.update()
+            self.visible_sprites.npc_update(self.player)
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
             # Update enemy respawn based on area and time intervals
             self.enemy_spawner.update()
+
+            for npc in self.visible_sprites:
+                if hasattr(npc, 'sprite_type') and npc.sprite_type == 'npc'and npc.dialog.dialog_active:
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYDOWN:
+                            npc.dialog.handle_events(event)  # Pass events to the dialog
 
 
 # New ChunkedCameraGroup for chunk loading
@@ -243,3 +266,8 @@ class ChunkedCameraGroup(pygame.sprite.Group):
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
         for enemy in enemy_sprites:
             enemy.enemy_update(player)
+
+    def npc_update(self, player):
+        npc_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'npc']
+        for npc in npc_sprites:
+            npc.npc_update(player)  # Call the NPC's update method
