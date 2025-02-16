@@ -118,30 +118,29 @@ class Level:
                             elif col == '82':
                                     npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc3")
                                     self.chunks[chunk_key].append(npc)
+                            elif col == '1':
+                                monster_name = 'tree'
+                            elif col == '2':
+                                monster_name = 'cherry tree'
+                            elif col == '3':
+                                monster_name = 'snowy tree'
+                            elif col == '4':
+                                monster_name = 'spirit'
+                            elif col == '5':
+                                monster_name = 'ninja'
+                            elif col == '6':
+                                monster_name = 'oni'
                             else:
-                                if col == '1':
-                                    monster_name = 'tree'
-                                elif col == '2':
-                                    monster_name = 'cherry tree'
-                                elif col == '3':
-                                    monster_name = 'snowy tree'
-                                elif col == '4':
-                                    monster_name = 'spirit'
-                                elif col == '5':
-                                    monster_name = 'ninja'
-                                elif col == '6':
-                                    monster_name = 'oni'
-                                else:
-                                    monster_name = 'tree'
-                                enemy = Enemy(
-                                    monster_name,
-                                    (x, y),
-                                    [self.visible_sprites, self.attackable_sprites],
-                                    self.obstacle_sprites,
-                                    self.damage_player,
-                                    self.trigger_death_particles,
-                                    self.add_exp)
-                                self.chunks[chunk_key].append(enemy)
+                                monster_name = 'tree'
+                            enemy = Enemy(
+                                monster_name,
+                                (x, y),
+                                [self.visible_sprites, self.attackable_sprites],
+                                self.obstacle_sprites,
+                                self.damage_player,
+                                self.trigger_death_particles,
+                                self.add_exp)
+                            self.chunks[chunk_key].append(enemy)
 
     def create_attack(self):
         self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
