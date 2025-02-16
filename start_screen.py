@@ -24,8 +24,8 @@ class StartScreen:
 
         # Create a temporary background by drawing the current level’s background
         self.level.visible_sprites.custom_draw(self.level.player)
-        pygame.image.save(self.screen, "../graphics/tilemap/temp_background.png")
-        self.background_image = pygame.image.load("../graphics/tilemap/temp_background.png")
+        pygame.image.save(self.screen, "../assets/images/map assets/temp_background.png")
+        self.background_image = pygame.image.load("../assets/images/map assets/temp_background.png")
 
         # Create a blurred version of the background by scaling down then up
         self.background_blur = pygame.transform.smoothscale(self.background_image, (WIDTH // 4, HEIGHT // 4))

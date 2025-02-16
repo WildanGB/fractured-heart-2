@@ -33,9 +33,9 @@ class AnimationPlayer:
 			'tree': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
 			'cherry tree': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
 			'snowy tree': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
-			'raccoon': import_folder('../assets/images/video assets/graphics/particles/raccoon'),
+			'oni': import_folder('../assets/images/video assets/graphics/particles/raccoon'),
 			'spirit': import_folder('../assets/images/video assets/graphics/particles/nova'),
-			'bamboo': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
+			'ninja': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
 			
 			# leafs 
 			'leaf': (
