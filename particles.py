@@ -30,12 +30,12 @@ class AnimationPlayer:
 			# 'raccoon': import_folder('../graphics/particles/raccoon'),
 			# 'spirit': import_folder('../graphics/particles/nova'),
 			# 'bamboo': import_folder('../graphics/particles/bamboo'),
-			'tree': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
-			'cherry tree': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
-			'snowy tree': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
-			'oni': import_folder('../assets/images/video assets/graphics/particles/raccoon'),
-			'spirit': import_folder('../assets/images/video assets/graphics/particles/nova'),
-			'ninja': import_folder('../assets/images/video assets/graphics/particles/bamboo'),
+			'tree': import_folder('../assets/images/enemies/tree/death'),
+			'cherry tree': import_folder('../assets/images/enemies/cherry tree/death'),
+			'snowy tree': import_folder('../assets/images/enemies/snowy tree/death'),
+			'oni': import_folder('../assets/images/enemies/oni/death'),
+			'spirit': import_folder('../assets/images/enemies/spirit/death'),
+			'ninja': import_folder('../assets/images/enemies/ninja/death'),
 			
 			# leafs 
 			'leaf': (
