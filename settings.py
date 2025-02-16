@@ -2,14 +2,20 @@
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
+UI_COLOR = (255, 255, 255)  # White for highlighted text
+HOVER_COLOR = (255, 200, 0)  # Gold/yellow for selection
+TEXT_COLOR = (255, 255, 255) # White
+SPARE = (0,0,0)
+
 # TILESIZE = 64
 TILESIZE = 128
 COLLISION_GRID_SIZE = 128
 HITBOX_OFFSET = {
-	'player': -26,
-	'object': -40,
-	'grass': -10,
-	'invisible': 0}
+    'player': 20,
+    'object': -40,
+    'grass': -10,
+    'invisible': 0
+}
 
 # ui
 BAR_HEIGHT = 20
