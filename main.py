@@ -1,15 +1,11 @@
 import pygame, sys
 from settings import *
-from level import Level
-from start_screen import StartScreen
+from start_screen import StartScreen  # Assuming you name this file menu.py
 from game_over import GameOverScreen
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Fractured-Heart")
-    clock = pygame.time.Clock()
+import threading
 
-
+# Global dictionary for cached assets
+assets = {}
 
 def show_loading_screen(screen, message="Loading..."):
     screen.fill((0, 0, 0))  # Black background
@@ -19,14 +15,12 @@ def show_loading_screen(screen, message="Loading..."):
     screen.blit(loading_text, text_rect)
     pygame.display.flip()
 
-
 def show_transition_screen(screen):
     transition_surface = pygame.Surface((WIDTH, HEIGHT))
     transition_surface.fill((0, 0, 0))
     font = pygame.font.Font(UI_FONT, 40)
     text = font.render("Entering the world...", True, TEXT_COLOR)
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-
     alpha = 0
     for _ in range(30):  # Smooth fade-in animation
         transition_surface.set_alpha(alpha)
@@ -37,6 +31,16 @@ def show_transition_screen(screen):
         alpha += 8
         pygame.time.delay(30)
 
+def load_assets():
+    global assets
+    # Example: load a floor image and store it in assets.
+    assets['floor'] = pygame.image.load('../assets/images/map assets/game map.png').convert_alpha()
+    assets['player'] = pygame.image.load('../assets/images/main character/player.png').convert_alpha()
+    assets['foliage'] = pygame.image.load('../assets/images/map assets/foliage.png')
+    print("Assets loaded.")
+
+def load_assets_thread():
+    load_assets()
 
 def main():
     pygame.init()
@@ -48,133 +52,81 @@ def main():
 
     show_loading_screen(screen)
 
-    # Create and display the main menu
+    # Main menu setup
     menu = StartScreen(screen)
     in_menu = True
+    game_mode = None  # Will hold "start" or "endless"
+
     while in_menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if menu.handle_input(event):
+            # Handle menu input
+            result = menu.handle_input(event)
+            if result in ("start", "endless"):
+                game_mode = result
                 in_menu = False
+            elif result == "quit":
+                pygame.quit()
+                sys.exit()
 
+        # Update menu display
         menu.display()
         pygame.display.flip()
         clock.tick(FPS)
 
-    show_transition_screen(screen)
+    if game_mode:
+        show_transition_screen(screen)
 
-    # Sound setup
-    main_sound = pygame.mixer.Sound('../audio/main.ogg')
-    main_sound.set_volume(0.5)
-    main_sound.play(loops=-1)
+        # If Endless Mode is selected, adjust module path to load code from "code2"
+        if game_mode == "endless":
+            sys.path.insert(0, "code2")
 
-    # After exiting the menu, start the game
-    level = Level()
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                # if event.key ==pygame.K_ESCAPE:
-                if event.key == pygame.K_u  :
-                    level.toggle_menu()
+        # Sound setup
+        main_sound = pygame.mixer.Sound('../audio/main.ogg')
+        main_sound.set_volume(0.5)
+        main_sound.play(loops=-1)
 
-        screen.fill('black')
-        level.run()
-        pygame.display.update()
-        clock.tick(FPS)
+        # Import Level from the appropriate directory (either original or endless mode)
+        from level import Level
+        level = Level()
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_u:
+                        level.toggle_menu()
 
+            # Game loop
+            screen.fill(WATER_COLOR)
+            level.run()
+            pygame.display.update()
+            clock.tick(FPS)
 
-        # Check for game over condition (e.g., player health <= 0)
-        if level.player.health <= 0:
-            game_over = GameOverScreen(screen, level)
-            in_game_over = True
-            while in_game_over:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    result = game_over.handle_input(event)
-                    if result == "restart":
-                        # Restart the game by reinitializing the level
-                        show_transition_screen(screen)
-                        level = Level()
-                        in_game_over = False
-                    elif result == "quit":
-                        pygame.quit()
-                        sys.exit()
-                game_over.display()
-                pygame.display.flip()
-                clock.tick(FPS)
-
-if __name__ == "__main__":
-    main()
-    # Sound setup
-    main_sound = pygame.mixer.Sound('../audio/main.ogg')
-    main_sound.set_volume(0.5)
-    main_sound.play(loops=-1)
-
-    # Create and display the main menu
-    menu = StartScreen(screen)
-    in_menu = True
-    while in_menu:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if menu.handle_input(event):
-                in_menu = False
-
-        menu.display()
-        pygame.display.flip()
-        clock.tick(FPS)
-
-    # After exiting the menu, start the game
-    level = Level()
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_u:
-                    level.toggle_menu()
-
-        screen.fill('black')
-        level.run()
-        pygame.display.update()
-        clock.tick(FPS)
-
-
-        # Check for game over condition (e.g., player health <= 0)
-        if level.player.health <= 0:
-            game_over = GameOverScreen(screen, level)
-            in_game_over = True
-            while in_game_over:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    result = game_over.handle_input(event)
-                    if result == "restart":
-                        # Restart the game by reinitializing the level
-                        level = Level()
-                        in_game_over = False
-                    elif result == "quit":
-                        pygame.quit()
-                        sys.exit()
-                game_over.display()
-                pygame.display.flip()
-                clock.tick(FPS)
+            # Game over check
+            if level.player.health <= 0:
+                game_over = GameOverScreen(screen, level)
+                in_game_over = True
+                while in_game_over:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        result = game_over.handle_input(event)
+                        if result == "restart":
+                            show_transition_screen(screen)
+                            level = Level()
+                            in_game_over = False
+                        elif result == "quit":
+                            pygame.quit()
+                            sys.exit()
+                    game_over.display()
+                    pygame.display.flip()
+                    clock.tick(FPS)
 
 if __name__ == "__main__":
     main()
