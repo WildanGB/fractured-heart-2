@@ -23,7 +23,7 @@ class StartScreen:
         self.menu_font = pygame.font.Font(UI_FONT, 42)
         self.menu_items = [
             {"text": "Start Game in Endless Mode", "action": "endless"},
-            {"text": "Start Game in Story Mode", "action": "story"},  # New tab added
+            {"text": "Start Game in Story Mode", "action": "story"},
             {"text": "How to Play", "action": "howto"},
             {"text": "Credits", "action": "credits"},
             {"text": "Quit", "action": "quit"}
@@ -77,7 +77,11 @@ class StartScreen:
         ]
 
         # Background setup: capture the current level background, blur it for menu use.
-        self.level.visible_sprites.custom_draw(self.level.player)
+        # Check if the level's visible_sprites group has a custom_draw method; if not, use draw.
+        if hasattr(self.level.visible_sprites, "custom_draw"):
+            self.level.visible_sprites.custom_draw(self.level.player)
+        else:
+            self.level.visible_sprites.draw(self.screen)
         pygame.image.save(self.screen, "../assets/images/map assets/temp_background.png")
         self.background_image = pygame.image.load("../assets/images/map assets/temp_background.png")
         self.background_blur = pygame.transform.smoothscale(self.background_image, (WIDTH // 4, HEIGHT // 4))
@@ -128,7 +132,7 @@ class StartScreen:
         self.screen.blit(self.title_text, self.title_rect)
         for index, item in enumerate(self.menu_items):
             y_pos = self.menu_start_y + (index * self.menu_spacing)
-            color = HOVER_COLOR if index == self.selected_index else TEXT_COLOR
+            color = UI_COLOR if index == self.selected_index else TEXT_COLOR
             text_surface = self.menu_font.render(item["text"], True, color)
             rect = text_surface.get_rect(center=(WIDTH // 2, y_pos))
             self.screen.blit(text_surface, rect)

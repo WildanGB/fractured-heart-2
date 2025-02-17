@@ -3,6 +3,7 @@ from settings import *
 from start_screen import StartScreen  # Assuming you name this file menu.py
 from game_over import GameOverScreen
 import threading
+from settings import *  # Make sure your constants are available
 
 # Global dictionary for cached assets
 assets = {}
@@ -55,23 +56,32 @@ def main():
     # Main menu setup
     menu = StartScreen(screen)
     in_menu = True
-    game_mode = None  # Will hold "start" or "endless"
+    game_mode = None  # Will be set to "story" or "endless"
+
+    # Update start menu options to include story mode.
+    # (Ensure that your StartScreen menu_items list in start_screen.py is updated accordingly.)
+    # For example:
+    # self.menu_items = [
+    #     {"text": "Start Game in Story Mode", "action": "story"},
+    #     {"text": "Start Game in Endless Mode", "action": "endless"},
+    #     {"text": "How to Play", "action": "howto"},
+    #     {"text": "Credits", "action": "credits"},
+    #     {"text": "Quit", "action": "quit"}
+    # ]
 
     while in_menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            # Handle menu input
             result = menu.handle_input(event)
-            if result in ("start", "endless"):
+            if result in ("story", "endless"):
                 game_mode = result
                 in_menu = False
             elif result == "quit":
                 pygame.quit()
                 sys.exit()
 
-        # Update menu display
         menu.display()
         pygame.display.flip()
         clock.tick(FPS)
@@ -79,18 +89,21 @@ def main():
     if game_mode:
         show_transition_screen(screen)
 
-        # If Endless Mode is selected, adjust module path to load code from "code2"
-        if game_mode == "endless":
-            sys.path.insert(0, "code2")
+        # If story mode is selected, run main_story.py
+        if game_mode == "story":
+            import main_story
+            main_story.main()  # Launch the story map without loading/start screens
+            sys.exit()
+        else:
+            # Endless mode: load the regular game as before.
+            from level import Level as LevelClassic
+            level = LevelClassic()
 
         # Sound setup
         main_sound = pygame.mixer.Sound('../audio/main.ogg')
         main_sound.set_volume(0.5)
         main_sound.play(loops=-1)
 
-        # Import Level from the appropriate directory (either original or endless mode)
-        from level import Level
-        level = Level()
         running = True
         while running:
             for event in pygame.event.get():
@@ -101,7 +114,6 @@ def main():
                     if event.key == pygame.K_u:
                         level.toggle_menu()
 
-            # Game loop
             screen.fill(WATER_COLOR)
             level.run()
             pygame.display.update()
@@ -119,7 +131,12 @@ def main():
                         result = game_over.handle_input(event)
                         if result == "restart":
                             show_transition_screen(screen)
-                            level = Level()
+                            if game_mode == "endless":
+                                from level import Level as LevelClassic
+                                level = LevelClassic()
+                            else:
+                                import main_story
+                                level = main_story.Level()  # Assuming main_story.py defines Level as well
                             in_game_over = False
                         elif result == "quit":
                             pygame.quit()

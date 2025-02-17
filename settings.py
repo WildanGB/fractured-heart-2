@@ -19,7 +19,8 @@ UI_FONT = '../graphics/font/joystix.ttf'
 UI_FONT_SIZE = 18
 
 # general colors
-UI_COLOR = (255,255,0)
+UI_COLOR = (255, 255, 255)  # White for highlighted text
+HOVER_COLOR = (255, 200, 0)  # Gold/yellow for selection
 SPARE = (0,0,0)
 WATER_COLOR = '#71ddee'
 UI_BG_COLOR = '#222222'
