@@ -8,6 +8,9 @@ from settings import *  # Make sure your constants are available
 # Global dictionary for cached assets
 assets = {}
 
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+
 def show_loading_screen(screen, message="Loading..."):
     screen.fill((0, 0, 0))  # Black background
     font = pygame.font.Font(UI_FONT, 50)
@@ -52,6 +55,11 @@ def main():
     clock = pygame.time.Clock()
 
     show_loading_screen(screen)
+
+    # Sound setup
+    main_sound = pygame.mixer.Sound('../audio/main.ogg')
+    main_sound.set_volume(0.5)
+    main_sound.play(loops=-1)
 
     # Main menu setup
     menu = StartScreen(screen)
@@ -99,10 +107,6 @@ def main():
             from level import Level as LevelClassic
             level = LevelClassic()
 
-        # Sound setup
-        main_sound = pygame.mixer.Sound('../audio/main.ogg')
-        main_sound.set_volume(0.5)
-        main_sound.play(loops=-1)
 
         running = True
         while running:

@@ -40,7 +40,7 @@ class Player(Entity):
         self.magic_switch_time = None
 
         # stats
-        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 10}
+        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 5 }
         self.max_stats = {'health': 300, 'energy': 140, 'attack': 20, 'magic': 10, 'speed': 20}
         self.upgrade_cost = {'health': 100, 'energy': 100, 'attack': 100, 'magic': 100, 'speed': 100}
         self.health = self.stats['health'] * 0.5
@@ -72,19 +72,19 @@ class Player(Entity):
             keys = pygame.key.get_pressed()
 
             # movement input
-            if keys[pygame.K_w] or keys[pygame.K_UP]:
+            if keys[pygame.K_w]:
                 self.direction.y = -1
                 self.status = 'up'
-            elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            elif keys[pygame.K_s]:
                 self.direction.y = 1
                 self.status = 'down'
             else:
                 self.direction.y = 0
 
-            if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            if keys[pygame.K_d]:
                 self.direction.x = 1
                 self.status = 'right'
-            elif keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            elif keys[pygame.K_a]:
                 self.direction.x = -1
                 self.status = 'left'
             else:

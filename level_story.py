@@ -11,6 +11,8 @@ from enemy_story import Enemy
 from particles_story import AnimationPlayer
 from magic_story import MagicPlayer
 from upgrade_story import Upgrade
+from npc_story import Npc 
+
 
 
 class Level:
@@ -53,8 +55,8 @@ class Level:
             'entities': import_csv_layout('../assets/csv files/game map_entities.csv')
         }
         graphics = {
-            'grass': import_folder('../assets/images/map assets/grass'),
-            'objects': import_folder('../assets/images/video assets/graphics/objects')
+            'grass': import_folder('../assets/images/map assets/grass')
+
         }
 
         for style, layout in layouts.items():
@@ -81,10 +83,10 @@ class Level:
                                 'grass',
                                 random_grass_image)
                             self.chunks[chunk_key].append(sprite)
-                        if style == 'object':
-                            surf = graphics['objects'][int(col)]
-                            sprite = Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
-                            self.chunks[chunk_key].append(sprite)
+                        # if style == 'object':
+                        #     surf = graphics['objects'][int(col)]
+                        #     sprite = Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surf)
+                        #     self.chunks[chunk_key].append(sprite)
                         if style == 'entities':
                             if col == '0':
                                 self.player = Player(
@@ -96,6 +98,16 @@ class Level:
                                     self.create_magic)
                                 # Optionally, add player to a chunk:
                                 # self.chunks[chunk_key].append(self.player)
+                            elif col == '80':
+                                    npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc1")
+                                    self.chunks[chunk_key].append(npc)
+                            elif col == '81':
+                                    npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc2")
+                                    self.chunks[chunk_key].append(npc)
+                            elif col == '82':
+                                    npc = Npc((x,y),[self.visible_sprites, self.obstacle_sprites],"npc3")
+                                    self.chunks[chunk_key].append(npc)
+
                             else:
                                 if col == '1':
                                     monster_name = 'tree'
@@ -188,8 +200,15 @@ class Level:
                 self.display_surface.blit(sprite.image, offset_pos)
             self.ui.display(self.player)
             self.visible_sprites.update()
+            self.visible_sprites.npc_update(self.player)
             self.visible_sprites.enemy_update(self.player)
             self.player_attack_logic()
+
+            for npc in self.visible_sprites:
+                if hasattr(npc, 'sprite_type') and npc.sprite_type == 'npc'and npc.dialog.dialog_active:
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYDOWN:
+                            npc.dialog.handle_events(event)  # Pass events to the dialog
 
 
 # New ChunkedCameraGroup for chunk loading
@@ -251,3 +270,8 @@ class ChunkedCameraGroup(pygame.sprite.Group):
                          hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
         for enemy in enemy_sprites:
             enemy.enemy_update(player)
+
+    def npc_update(self, player):
+        npc_sprites = [sprite for sprite in self.sprites() if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'npc']
+        for npc in npc_sprites:
+            npc.npc_update(player)  # Call the NPC's update method

@@ -150,7 +150,7 @@ class StartScreen:
 
         for index, item in enumerate(self.menu_items):
             y_pos = self.menu_start_y + (index * self.menu_spacing)
-            color = HOVER_COLOR if index == self.selected_index else TEXT_COLOR
+            color = TEXT_COLOR_SELECTED if index == self.selected_index else TEXT_COLOR
             text_surface = self.menu_font.render(item["text"], True, color)
             rect = text_surface.get_rect(center=(WIDTH // 2, y_pos))
             self.screen.blit(text_surface, rect)

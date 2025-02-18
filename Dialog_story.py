@@ -1,6 +1,6 @@
 import pygame
 from settings import * 
-from npc import *
+from npc_story import *
 
 class DialogRenderer:
     def __init__(self,dialog_manager,img):
