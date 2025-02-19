@@ -1,192 +1,169 @@
 # Fractured‑Heart: A 2D Zelda‑Inspired Adventure Game
 
 **Project Title:** Fractured‑Heart  
-**Student Name:** Wildan, Mahtab, Marwan, Abizar, Yousif  
+**Student Name:** Wildan, Mahtab, Marwan, Abizar, Yousif Faisal
 **Date:** February 2025
 
 ---
 
-## Index
+## Table of Contents
 
 1. [Introduction](#introduction)
 2. [Hardware/Software Requirements](#hardwaresoftware-requirements)
 3. [Design Strategies](#design-strategies)
-   - [Overall Architecture and Module Organization](#overall-architecture-and-module-organization)
-   - [Design Patterns and Optimization Techniques](#design-patterns-and-optimization-techniques)
-   - [Python Libraries Used](#python-libraries-used)
-   - [Outline Sketches and Flow Diagrams](#outline-sketches-and-flow-diagrams)
-4. [Development Process](#development-process)
-5. [Team Contributions](#team-contributions)
-   - [Asset and UI Design](#asset-and-ui-design)
-   - [AI Integration](#ai-integration)
-   - [Core Programming](#core-programming)
-6. [Code Overview](#code-overview)
-   - [File Structure and Key Modules](#file-structure-and-key-modules)
-   - [Explanation of Main Components](#explanation-of-main-components)
-   - [Selected Code Snippets](#selected-code-snippets)
-7. [Conclusion](#conclusion)
+   - [Performance Optimizations](#performance-optimizations)
+   - [Artificial Intelligence and Dialogue](#artificial-intelligence-and-dialogue)
+4. [Project Architecture and Code Overview](#project-architecture-and-code-overview)
+   - [Module Structure](#module-structure)
+   - [Key Components and Their Roles](#key-components-and-their-roles)
+5. [Selected Code Snippets](#selected-code-snippets)
+6. [Development Process and Team Collaboration](#development-process-and-team-collaboration)
+7. [Screenshots and Output](#screenshots-and-output)
+8. [Conclusion](#conclusion)
 
 ---
 
 ## 1. Introduction
 
-**Fractured‑Heart** is a 2D adventure game inspired by classic Zelda titles. The game features an expansive world rendered with efficient chunk loading and view culling techniques, dynamic enemy behavior with object pooling and area‑based respawn, and an integrated NPC dialogue system for immersive storytelling. Players explore varied maps, engage in combat, cast magic, upgrade their character, and interact with NPCs—all while the game’s performance remains optimized through our advanced design strategies.
+**Fractured‑Heart** is a 2D action-adventure game inspired by classic Zelda titles. The game immerses players in a richly detailed world where exploration, combat, and narrative-driven interactions all play critical roles. Players traverse expansive maps, confront challenging enemies, and engage with NPCs through dynamic, branching dialogues. The project not only emphasizes polished gameplay but also showcases advanced performance optimizations and AI integration to deliver a smooth and engaging experience.
 
-### Objectives
-- **Engaging Gameplay:** Deliver dynamic combat, exploration, and immersive narrative.
-- **Performance Optimization:** Utilize chunk loading, view culling, and enemy pooling to ensure smooth performance on large maps.
-- **AI Integration:** Implement dialogue trees and branching conversations that adapt based on player choices.
-- **Collaborative Development:** Divide tasks based on team members’ strengths to streamline the development process.
+The main objectives of the project are:
+- **Engaging Gameplay:** Create a challenging yet rewarding adventure experience.
+- **Performance:** Ensure smooth performance even on large maps by using optimization techniques like chunk loading and view culling.
+- **AI Integration:** Develop sophisticated enemy behaviors, interactive NPC dialogs, and dynamic dialogue trees that respond to player choices.
+- **Collaboration:** Use modern development practices (Git, GitHub Projects) to coordinate work among team members with diverse strengths.
 
 ---
 
 ## 2. Hardware/Software Requirements
 
 ### Hardware Requirements
-- **Processor:** Intel Core i3 or equivalent  
-- **RAM:** 4 GB minimum (8 GB recommended)  
-- **Graphics:** Integrated graphics or better  
-- **Storage:** At least 500 MB of free disk space  
-- **Display:** 1280 x 720 resolution or higher
+- **Processor:** Intel Core i3 or equivalent
+- **RAM:** 4 GB minimum (8 GB recommended)
+- **Graphics:** Integrated or dedicated GPU
+- **Storage:** Minimum 500 MB free space
+- **Display:** 1280×720 resolution or higher
 
 ### Software Requirements
-- **Operating System:** Windows 10 (or any OS supporting Python and Pygame)  
-- **Python:** Version 3.7 or higher  
-- **Pygame:** Version 2.0 or higher  
-- **Additional Libraries:** Standard Python libraries (os, sys, random, threading)  
+- **Operating System:** Windows, macOS, or Linux (with Python support)
+- **Python:** Version 3.7 or higher
+- **Pygame:** Version 2.0 or higher
+- **Additional Libraries:** os, sys, random, threading (included with Python)
 - **IDE/Editor:** PyCharm, VSCode, or any Python-compatible IDE
 
 ---
 
 ## 3. Design Strategies
 
-### Overall Architecture and Module Organization
-The project is organized into modular components:
-- **main.py:** Entry point; manages game initialization, loading/transition screens, and the main game loop.
-- **level.py:** Manages map creation, collision detection, sprite groups, chunk loading, and enemy respawning.
-- **player.py & enemy.py:** Define the behaviors, animations, and interactions of the player and enemy entities.
-- **tile.py:** Manages individual map tiles and collision boundaries.
-- **support.py:** Provides utility functions (e.g., CSV parsing, asset loading).
-- **ui.py & upgrade.py:** Handle user interface elements and the upgrade system.
-- **enemy_spawner.py:** Implements area‑based, time‑based enemy respawn using object pooling.
-- **ChunkedCameraGroup:** A custom sprite group that implements chunk loading and view culling.
+### Performance Optimizations
 
-### Design Patterns and Optimization Techniques
-- **Chunk Loading & View Culling:**  
-  Only sprites within or near the visible area are drawn, greatly reducing the rendering load on large maps.
-- **Object Pooling for Enemy Respawns:**  
-  Instead of creating new enemy objects continuously, we reuse them via a time‑based respawn mechanism that checks if the enemy’s spawn point is off‑screen.
-- **Collision Grid Optimization:**  
-  Although not the primary focus in this version, the game also utilizes a collision grid to optimize collision checks.
+To maintain a smooth gameplay experience on large maps, several optimization techniques have been employed:
 
-### Python Libraries Used
-- **Pygame:** For game graphics, events, and sound.
-- **Random:** For asset selection and enemy spawning logic.
-- **Threading:** For asynchronous asset loading.
-- **OS & CSV Modules:** (via support.py) for file management and CSV parsing.
+- **Chunk Loading and View Culling:**  
+  The game divides the map into smaller sections or “chunks.” Only the chunks that are near the player are rendered. This technique minimizes the number of sprites drawn each frame, improving performance.  
+  *Example:* The custom `ChunkedCameraGroup` class calculates the visible area based on the player's position and draws only those sprites that fall within or near this area.
 
-### Outline Sketches and Flow Diagrams
-- **Game Flow Diagram:**  
-  1. **Loading Screen:** Animated “Loading…” while assets load asynchronously.  
-  2. **Start Menu:** Navigation options (Start Game, Settings, Scores, etc.).  
-  3. **Transition Screen:** Smooth fade-in transition into the gameplay.  
-  4. **Game Loop:** Level class manages map rendering, enemy updates, and UI overlays.  
-  5. **Game Over/Upgrade Screens:** Presented when the player dies or pauses.
-- **Module Interaction Diagram:**  
-  Diagrams (attached separately) illustrate how main.py calls level.py, which in turn integrates tile.py, player.py, enemy.py, UI modules, and support functions.
+- **Enemy Respawn Control and Object Pooling:**  
+  An enemy spawner monitors designated enemy spawn points and respawns enemies only when they are off-screen and no enemy is already present nearby. This prevents endless spawns of enemies (e.g. raccoons) and ensures resource efficiency.
+
+### Artificial Intelligence and Dialogue
+
+A major focus of the project is on the integration of AI, which is applied in several areas:
+
+- **Enemy Behavior:**  
+  Enemies dynamically evaluate their distance from the player and switch between states (idle, move, attack). They use timers and cooldowns to regulate their actions. For example, an enemy might enter an “attack” state when the player is within a certain range and revert to “idle” if the player moves out of range.
+
+- **NPC Interactions:**  
+  Non-player characters (NPCs) are designed to enrich the game’s narrative. They provide quests, offer hints, and sometimes challenge the player. NPCs use a dialogue system that can branch based on player choices.
+
+- **Dialogue System:**  
+  The dialogue system is designed to support branching conversations. It loads dialogue trees from external data sources and uses decision-making algorithms (such as binary trees or loop-based searches) to determine the next dialogue node. This creates a dynamic and adaptive narrative experience.
 
 ---
 
-## 4. Development Process
+## 4. Project Architecture and Code Overview
 
-Throughout the project, we leveraged **GitHub** and **GitHub Projects** to manage our development workflow. We set up a repository to store all code, assets, and documentation. Using GitHub Projects, we created task boards where each task was broken down into subtasks and assigned to team members based on their strengths:
+### Module Structure
 
-- **Asset/UI Designer - Marwan & Yousif:** Focused on creating and optimizing graphics (tilesets, NPCs, UI elements, and animations) using Krita and Tiled. The designer also prepared CSV files for map layouts.
-- **AI Specialist - Mahtab:** Developed dialogue trees and branching conversations, integrating adaptive decision-making into the narrative. The dialogue system uses a file-based string dictionary and a binary tree search to navigate conversation nodes.
-- **Core Programmers - Wildan & Abizar:** Implemented the game’s main logic, including the Level, Player, Enemy, and enemy respawn systems. The programmer also integrated optimization techniques such as chunk loading and view culling.
+The project is organized into several key directories and modules:
 
-Regular commits, pull requests, and code reviews on GitHub ensured that integration issues were minimized. GitHub Projects helped track progress, assign tasks, and plan milestones, resulting in a streamlined development process.
+- **assets/**  
+  Contains all images, sounds, and other media files.
+
+- **code/**  
+  Houses the main game logic:
+  - **main.py:** Entry point of the game.
+  - **level.py / level_story.py:** Manage map creation, sprite grouping, chunk loading, and enemy respawning.
+  - **player.py & enemy.py:** Define entity behavior (movement, combat, animation).
+  - **particles_story.py:** Handles particle effects (magic spells, enemy death animations).
+  - **enemy_spawner.py:** Implements the enemy respawn system.
+  - **start_screen.py:** Provides the main menu interface.
+  - **npc.py:** Manages NPC behaviors and dialogues.
+
+- **docs/**  
+  Contains documentation files.
+
+- **tests/**  
+  Houses unit tests and integration tests.
+
+### Key Components and Their Roles
+
+- **Main Game Loop (main.py):**  
+  Initializes Pygame, loads assets, displays loading and transition screens, and launches the main menu. It then conditionally starts the regular game or story mode based on user input.
+
+- **Level Management (level.py / level_story.py):**  
+  Constructs the game map from CSV files, assigns sprites to chunks, and manages enemy spawn points.
+
+- **Entity Classes (player.py & enemy.py):**  
+  Define the behaviors, collision logic, and animations for the player and enemy characters.
+
+- **Optimization Techniques (ChunkedCameraGroup):**  
+  Implements chunk loading and view culling to ensure that only visible sprites are rendered.
+
+- **AI Integration (enemy_ai, Dialogue System in npc.py):**  
+  Enemies and NPCs use AI logic to interact with the player. Dialogue systems provide branching conversations that influence gameplay.
 
 ---
 
-## 5. Team Contributions
+## 5. Selected Code Snippets
 
-### Asset and UI Design
-- **Asset Designer:**  
-  - Created a seamless grass tileset that transitions naturally between tiles using Krita.  
-  - Colored and animated assets (using PNG sequences) for NPCs, enemies, and environmental elements.  
-  - Designed multiple maps using Tiled, which included object layers with border blocks for collisions.
-- **UI Designer:**  
-  - Developed a clean and responsive UI with a start menu, upgrade menu, and in-game HUD.  
-  - Prepared CSV files for map layers (boundaries, grass, objects, entities) and optimized UI elements for performance.
-
-### AI Integration
-- **AI Specialist:**  
-  - Implemented dialogue trees with branching conversations that adapt based on player choices.  
-  - Developed a file-based string dictionary and binary tree search algorithm to manage dialogue nodes.  
-  - Integrated adaptive enemy behavior and narrative elements that converge to a unified story outcome.  
-  - *(Note: Dialogue tree code will be attached separately.)*
-
----
-
-## 6. Code Overview
-
-### File Structure and Key Modules
-- **main.py:** Initializes the game, handles transitions, and runs the main loop.
-- **level.py:** Manages map creation, collision, sprite grouping, chunk loading, and enemy respawning.
-- **player.py & enemy.py:** Define core entity behaviors and interactions.
-- **tile.py:** Manages individual tiles and collision logic.
-- **support.py:** Utility functions for CSV and asset imports.
-- **ui.py & upgrade.py:** Manage the user interface and upgrade system.
-- **enemy_spawner.py:** Implements area‑ and time‑based enemy respawning using object pooling.
-- **ChunkedCameraGroup:** A custom sprite group for efficient rendering via chunk loading.
-
-### Explanation of Main Components
-- **Level Class:**  
-  Reads CSV files to build the map and records enemy spawn points. Integrates chunk loading and creates an enemy spawner to manage enemy respawns based on area and time.
-- **Player and Enemy Classes:**  
-  Manage movement, combat, animations, and interactions. The Enemy class incorporates sound caching and a death process that plays a death animation before removal.
-- **ChunkedCameraGroup:**  
-  Efficiently draws only those sprites in nearby chunks, greatly improving performance.
-- **Enemy Spawner:**  
-  Checks each enemy spawn point periodically. If the spawn point is off‑screen and no enemy is present, it creates a new enemy, ensuring respawned enemies are visible and correctly initialized.
-- **Dialogue & AI:**  
-  Dialogue trees and branching narratives (developed by our AI Specialist) integrate adaptive storytelling into gameplay.
-
-### Selected Code Snippets
-**Enemy Spawner – enemy_spawner.py:**
+### Code Snippet 1: Chunked Camera Group (View Culling & Chunk Loading)
 ```python
-import pygame
-from enemy import Enemy
-
+class ChunkedCameraGroup(pygame.sprite.Group):
+    def custom_draw(self, player):
+        self.offset.x = player.rect.centerx - self.half_width
+        self.offset.y = player.rect.centery - self.half_height
+        floor_offset_pos = self.floor_rect.topleft - self.offset
+        self.display_surface.blit(self.floor_surf, floor_offset_pos)
+        player_chunk_x = player.rect.centerx // (self.chunk_size * TILESIZE)
+        player_chunk_y = player.rect.centery // (self.chunk_size * TILESIZE)
+        sprites_to_draw = []
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                key = (player_chunk_x + dx, player_chunk_y + dy)
+                if key in self.chunks:
+                    sprites_to_draw.extend(self.chunks[key])
+        view_rect = pygame.Rect(self.offset.x, self.offset.y,
+                                self.display_surface.get_width(),
+                                self.display_surface.get_height())
+        for sprite in sorted(sprites_to_draw, key=lambda spr: spr.rect.centery):
+            if hasattr(sprite, 'sprite_type') and sprite.sprite_type == 'invisible':
+                continue
+            if not sprite.alive():
+                continue
+            if sprite.rect.colliderect(view_rect):
+                offset_pos = sprite.rect.topleft - self.offset
+                self.display_surface.blit(sprite.image, offset_pos)
+        offset_pos = player.rect.topleft - self.offset
+        self.display_surface.blit(player.image, offset_pos)
+```
+### Code Snippet 2: Enemy Respawn Logic (EnemySpawner.update)
+```python
 class EnemySpawner:
-    def __init__(self, level, area_size=100, respawn_interval=5000, update_interval=1000):
-        self.level = level
-        self.area_size = area_size
-        self.respawn_interval = respawn_interval
-        self.update_interval = update_interval
-        self.last_update = pygame.time.get_ticks()
-        self.spawn_times = {spawn: pygame.time.get_ticks() for spawn in self.level.enemy_spawn_points}
-
-    def enemy_in_area(self, pos):
-        player = self.level.player
-        cam_width = self.level.display_surface.get_width()
-        cam_height = self.level.display_surface.get_height()
-        camera_rect = pygame.Rect(0, 0, cam_width, cam_height)
-        camera_rect.center = player.rect.center
-        if camera_rect.collidepoint(pos):
-            return True
-        area_rect = pygame.Rect(0, 0, self.area_size, self.area_size)
-        area_rect.center = pos
-        for enemy in self.level.attackable_sprites:
-            if enemy.rect.colliderect(area_rect):
-                return True
-        return False
-
     def update(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_update < self.update_interval:
-            return
+            return  # Throttle updates.
         self.last_update = current_time
         for spawn in self.level.enemy_spawn_points:
             last_spawn_time = self.spawn_times.get(spawn, 0)
@@ -207,8 +184,94 @@ class EnemySpawner:
                     new_enemy.vulnerable = True
                     self.spawn_times[spawn] = current_time
 ```
-## 7. Conclusion
+### Code Snippet 3: Enemy Behavior (Status and Actions)
+```python
+def get_status(self, player):
+    distance = self.get_player_distance_direction(player)[0]
+    if distance <= self.attack_radius and self.can_attack:
+        if self.status != 'attack':
+            self.frame_index = 0
+        self.status = 'attack'
+    elif distance <= self.notice_radius:
+        self.status = 'move'
+    else:
+        self.status = 'idle'
 
-Fractured‑Heart is a 2D adventure game that marries engaging gameplay with robust performance optimizations. Through techniques like chunk loading, view culling, and object pooling for enemy respawns, the game maintains smooth performance on expansive maps. Our development process leveraged GitHub and GitHub Projects to organize tasks and assign them based on team members’ strengths, ensuring efficient collaboration. The asset and UI design, combined with advanced AI dialogue integration, result in an immersive game experience.
+def actions(self, player):
+    if self.status == 'attack':
+        self.attack_time = pygame.time.get_ticks()
+        self.damage_player(self.attack_damage, self.attack_type)
+        self.attack_sound.play()
+    elif self.status == 'move':
+        self.direction = self.get_player_distance_direction(player)[1]
+    else:
+        self.direction = pygame.math.Vector2()
+```
+### Code Snippet 4: Dialogue System (Concept/Pseudocode)
+```python
+class DialogueManager:
+    def __init__(self):
+        self.dialogue_tree = self.load_dialogue_tree()
 
-This documentation, along with the attached code files, provides a comprehensive overview of the project’s design, development, and implementation.
+    def load_dialogue_tree(self):
+        # Load dialogue data from a file or dictionary.
+        return {}
+
+    def start_dialogue(self, npc_id):
+        dialogue = self.dialogue_tree.get(npc_id, [])
+        self.display_dialogue(dialogue)
+
+    def process_choice(self, choice):
+        next_node = self.get_next_node(choice)
+        self.display_dialogue(next_node)
+```
+### Code Snippet 5: Particle Effect with Placeholder (in particles_story.py)
+```python
+if not animation_frames or len(animation_frames) == 0:
+    placeholder = pygame.Surface((TILESIZE, TILESIZE))
+    placeholder.fill((255, 0, 255))
+    self.frames = [placeholder]
+else:
+    self.frames = animation_frames
+```
+### Code Snippet 6: Main Menu Conditional Launch
+```python
+if game_mode == "story":
+    import main_story
+    main_story.main()
+    sys.exit()
+else:
+    from level import Level as LevelClassic
+    level = LevelClassic()
+```
+### Code Snippet 7: Asset Loading Example
+```python
+def load_assets():
+    global assets
+    assets['floor'] = pygame.image.load('../assets/images/map assets/game map.png').convert_alpha()
+    assets['player'] = pygame.image.load('../assets/images/main character/player.png').convert_alpha()
+    assets['foliage'] = pygame.image.load('../assets/images/map assets/foliage.png')
+    print("Assets loaded.")
+```
+## 6. Development Process and Team Collaboration
+
+### Our team leveraged GitHub for version control and GitHub Projects for task management. We divided our responsibilities based on individual strengths:
+
+**Asset & UI Designer:**
+-Designed all visual elements (tilesets, NPCs, animations) using Krita and Tiled. Created CSV map files and optimized assets for performance.
+
+**AI Specialist:**
+-Developed enemy behavior, NPC interaction, and a branching dialogue system that adapts to player choices. This AI integration forms the heart of the project.
+
+**Core Programmer:**
+Implemented core gameplay mechanics, performance optimizations (such as chunk loading and view culling), and integrated AI and dialogue systems into a cohesive codebase.
+
+## Regular commits, pull requests, and code reviews helped ensure that all modules worked together seamlessly.
+
+
+## 8. Conclusion
+
+### Fractured‑Heart is a feature-rich 2D adventure game that combines engaging gameplay with advanced performance optimizations and AI-driven interactions. The use of chunk loading and view culling ensures smooth performance on expansive maps, while our sophisticated AI integration drives dynamic enemy behavior and interactive NPC dialogues. Our effective use of GitHub for version control and project management allowed for efficient collaboration among team members, ultimately resulting in a polished and immersive game experience.
+
+
+
